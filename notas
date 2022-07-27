@@ -1,0 +1,4 @@
+solhint --init
+solhint contracts/*.sol
+
+npm i --dev hardhat-deploy
