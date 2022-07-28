@@ -3,7 +3,7 @@ const { assert } = require('chai');
 const { developmentChain } = require('../../helper-hardhat-config.js');
 
 developmentChain.includes(network.name)
-?describe.skip
+? describe.skip
 : describe("fundme", function(){
     // todas las funciones test para la testnet
     let fundMe,
@@ -17,7 +17,10 @@ developmentChain.includes(network.name)
 
     it('fundMe func', async function(){
         await fundMe.fund({value: sendValue});
-        await fundMe.withdraw();
+
+        const transactionResponse = await fundMe.withdraw();
+        await transactionResponse.wait(1);
+
         const endFund = await fundMe.provider.getBalance(fundMe.address);
         assert.equal(endFund.toString(),"0");
         
@@ -25,22 +28,12 @@ developmentChain.includes(network.name)
         assert.equal(response.toString(), sendValue.toString());*/
     });
 
-    /*it('withdraw func', async function(){
-        await fundMe.fund({value: sendValue});
-
-        const startFund = await fundMe.provider.getBalance(fundMe.address);
-        const startDep = await fundMe.provider.getBalance(deployer);
-
+    it('withdraw func', async function(){
         const transactionResponse = await fundMe.cheaperWithdraw();
-        const transactionReceipt = await transactionResponse.wait(1);
-
-        const{gasUsed, effectiveGasPrice} = transactionReceipt;
+        await transactionResponse.wait(1);
 
         const endFund = await fundMe.provider.getBalance(fundMe.address);
-        const endDep = await fundMe.provider.getBalance(deployer);
-
         assert.equal(endFund,0);
-        assert.equal(startDep.add(startFund), endDep.add(gasUsed.mul(effectiveGasPrice)));
 
-    })*/
+    })
 })
